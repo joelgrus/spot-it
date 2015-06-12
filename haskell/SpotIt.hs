@@ -3,14 +3,14 @@ module SpotIt where
 import Control.Monad (guard)
 import qualified Data.Map as Map
 
-data Point = OrdinaryPoint Int Int Int  -- x, y, n
-           | PointAtInfinity Int Int    -- m, n
-           | VerticalInfinity Int       -- n
+data Point = OrdinaryPoint Int Int  -- x, y
+           | PointAtInfinity Int    -- m
+           | VerticalInfinity       --
     deriving (Ord, Eq, Show)
 
-data Line = OrdinaryLine Int Int Int    -- m, b, n
-          | VerticalLine Int Int        -- x, n
-          | LineAtInfinity Int          -- n
+data Line = OrdinaryLine Int Int    -- m, b
+          | VerticalLine Int        -- x
+          | LineAtInfinity          -- 
     deriving (Ord, Eq, Show)
 
 upTo :: Int -> [Int]
@@ -18,32 +18,32 @@ upTo n = [0 .. (n - 1)]
 
 -- hey, Haskell has list comprehensions too!
 ordinaryPoints :: Int -> [Point]
-ordinaryPoints n = [OrdinaryPoint x y n | x <- upTo n, y <- upTo n]
+ordinaryPoints n = [OrdinaryPoint x y | x <- upTo n, y <- upTo n]
 
 infinitePoints :: Int -> [Point]
-infinitePoints n = VerticalInfinity n : [PointAtInfinity m n | m <- upTo n]
+infinitePoints n = VerticalInfinity : [PointAtInfinity m | m <- upTo n]
 
 allPoints :: Int -> [Point]
 allPoints n = ordinaryPoints n ++ infinitePoints n
 
 allLines :: Int -> [Line]
-allLines n = ordinaryLines n ++ verticalLines n ++ [LineAtInfinity n] where
-    ordinaryLines n = [OrdinaryLine m b n | m <- upTo n, b <- upTo n]
-    verticalLines n = [VerticalLine x n | x <- upTo n]
+allLines n = ordinaryLines n ++ verticalLines n ++ [LineAtInfinity] where
+    ordinaryLines n = [OrdinaryLine m b | m <- upTo n, b <- upTo n]
+    verticalLines n = [VerticalLine x | x <- upTo n]
 
-pointsOnLine :: Line -> [Point]
-pointsOnLine (OrdinaryLine m b n) = PointAtInfinity m n : 
-    [OrdinaryPoint x ((m * x + b) `mod` n) n | x <- upTo n]
-pointsOnLine (VerticalLine x n) = VerticalInfinity n :
-    [OrdinaryPoint x y n | y <- upTo n]
-pointsOnLine (LineAtInfinity n) = infinitePoints n
+pointsOnLine :: Int -> Line -> [Point]
+pointsOnLine n (OrdinaryLine m b) = PointAtInfinity m : 
+    [OrdinaryPoint x ((m * x + b) `mod` n) | x <- upTo n]
+pointsOnLine n (VerticalLine x) = VerticalInfinity :
+    [OrdinaryPoint x y | y <- upTo n]
+pointsOnLine n LineAtInfinity = infinitePoints n
 
 type Picture = String
 type Card = [Picture]
 type Deck = [Card]
 
 createDeck :: Int -> [Picture] -> Deck
-createDeck n picNames = map (remap . pointsOnLine) $ allLines n
+createDeck n picNames = map (remap . pointsOnLine n) $ allLines n
     where
         encoding = Map.fromList $ zip (allPoints n) picNames
         remap :: [Point] -> [String]
@@ -73,4 +73,3 @@ play (card1:card2:cards) = do
         else putStrLn "wrong!"
     play cards
 play _ = return ()
-    
