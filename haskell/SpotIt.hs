@@ -38,7 +38,11 @@ pointsOnLine (VerticalLine x n) = VerticalInfinity n :
     [OrdinaryPoint x y n | y <- upTo n]
 pointsOnLine (LineAtInfinity n) = infinitePoints n
 
-createDeck :: Int -> [String] -> [[String]]
+type Picture = String
+type Card = [Picture]
+type Deck = [Card]
+
+createDeck :: Int -> [Picture] -> Deck
 createDeck n picNames = map (remap . pointsOnLine) $ allLines n
     where
         encoding = Map.fromList $ zip (allPoints n) picNames
@@ -48,9 +52,24 @@ createDeck n picNames = map (remap . pointsOnLine) $ allLines n
 -- create a deck with "pictures" labeled 0 to 56
 -- createDeck 7 (map show [0..])
 
-picsInCommon :: [String] -> [String] -> [String]
+picsInCommon :: Card -> Card -> [Picture]
 picsInCommon card1 card2 = do
     pic1 <- card1
     pic2 <- card2
     guard $ pic1 == pic2
     return pic1
+
+picInCommon :: Card -> Card -> Picture
+picInCommon c1 c2 = (!! 0) $ picsInCommon c1 c2
+    
+play :: Deck -> IO ()
+play (card1:card2:cards) = do
+    putStrLn $ show card1
+    putStrLn $ show card2
+    let common = picInCommon card1 card2
+    guess <- getLine
+    if guess == common
+        then putStrLn "correct!"
+        else putStrLn "wrong!"
+    play cards
+    
