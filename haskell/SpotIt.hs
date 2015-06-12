@@ -16,37 +16,26 @@ data Line = OrdinaryLine Int Int Int    -- m, b, n
 upTo :: Int -> [Int]
 upTo n = [0 .. (n - 1)]
 
+-- hey, Haskell has list comprehensions too!
 ordinaryPoints :: Int -> [Point]
-ordinaryPoints n = do
-    x <- upTo n
-    y <- upTo n
-    return $ OrdinaryPoint x y n
+ordinaryPoints n = [OrdinaryPoint x y n | x <- upTo n, y <- upTo n]
 
 infinitePoints :: Int -> [Point]
-infinitePoints n = VerticalInfinity n : do
-    m <- upTo n
-    return $ PointAtInfinity m n
+infinitePoints n = VerticalInfinity n : [PointAtInfinity m n | m <- upTo n]
 
 allPoints :: Int -> [Point]
 allPoints n = ordinaryPoints n ++ infinitePoints n
 
 allLines :: Int -> [Line]
 allLines n = ordinaryLines n ++ verticalLines n ++ [LineAtInfinity n] where
-    ordinaryLines n = do
-        m <- upTo n
-        b <- upTo n
-        return $ OrdinaryLine m b n
-    verticalLines n = do
-        x <- upTo n
-        return $ VerticalLine x n
-        
+    ordinaryLines n = [OrdinaryLine m b n | m <- upTo n, b <- upTo n]
+    verticalLines n = [VerticalLine x n | x <- upTo n]
+
 pointsOnLine :: Line -> [Point]
-pointsOnLine (OrdinaryLine m b n) = PointAtInfinity m n : do
-    x <- upTo n
-    return $ OrdinaryPoint x ((m * x + b) `mod` n) n
-pointsOnLine (VerticalLine x n) = VerticalInfinity n : do
-    y <- upTo n
-    return $ OrdinaryPoint x y n
+pointsOnLine (OrdinaryLine m b n) = PointAtInfinity m n : 
+    [OrdinaryPoint x ((m * x + b) `mod` n) n | x <- upTo n]
+pointsOnLine (VerticalLine x n) = VerticalInfinity n :
+    [OrdinaryPoint x y n | y <- upTo n]
 pointsOnLine (LineAtInfinity n) = infinitePoints n
 
 createDeck :: Int -> [String] -> [[String]]
