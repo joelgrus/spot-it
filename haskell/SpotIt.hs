@@ -46,7 +46,6 @@ createDeck :: Int -> [Picture] -> Deck
 createDeck n picNames = map (remap . pointsOnLine n) $ allLines n
     where
         encoding = Map.fromList $ zip (allPoints n) picNames
-        remap :: [Point] -> [String]
         remap = map (encoding Map.!)
                 
 -- create a deck with "pictures" labeled 0 to 56
