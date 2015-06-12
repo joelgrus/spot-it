@@ -59,7 +59,7 @@ picsInCommon card1 card2 = do
     return pic1
 
 picInCommon :: Card -> Card -> Picture
-picInCommon c1 c2 = (!! 0) $ picsInCommon c1 c2
+picInCommon c1 c2 = head $ picsInCommon c1 c2
     
 play :: Deck -> IO ()
 play (card1:card2:cards) = do
