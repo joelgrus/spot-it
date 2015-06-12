@@ -59,19 +59,9 @@ import random
 # get a list of animals we can use to name the cards
 with open("animals.txt", "r") as f:
     animals = [line.strip() for line in f]
-
-def make_deck(n, pics=None):
+    
+def make_deck(n, pics):
     points = all_points(n)
-
-    # if no pics specified, start with empty list
-    if pics is None: pics = []
-
-    # if fewer pics than points, add indexes
-    if len(pics) < len(points):
-        pics.extend(range(len(pics), len(points)))
-
-    # then take a random sample        
-    pics = random.sample(pics, len(points))
 
     # create a mapping from point to pic
     mapping = { point : pic 
@@ -80,9 +70,11 @@ def make_deck(n, pics=None):
     # and return the remapped cards
     return [map(mapping.get, line) for line in all_lines(n)]
     
+random.shuffle(animals)
+deck = make_deck(7, animals)
+    
 def play_game(deck):
-    # make a copy so as not to much with the original deck,
-    # and then shuffle it
+    # make a copy so as not to much with the original deck, and then shuffle it
     deck = deck[:]
     random.shuffle(deck)
 
