@@ -72,4 +72,5 @@ play (card1:card2:cards) = do
         then putStrLn "correct!"
         else putStrLn "wrong!"
     play cards
+play _ = return ()
     
