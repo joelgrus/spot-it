@@ -20,17 +20,13 @@ data Line = OrdinaryLine Int Int    -- m, b
           | LineAtInfinity          -- 
     deriving (Ord, Eq, Show)
 
--- | a helper function to create the list from 0 to n - 1
-upTo :: Int -> [Int]
-upTo n = [0 .. (n - 1)]
-
 -- | there are n^2 ordinary points (x, y)
 ordinaryPoints :: Int -> [Point]
-ordinaryPoints n = [OrdinaryPoint x y | x <- upTo n, y <- upTo n]
+ordinaryPoints n = [OrdinaryPoint x y | x <- [0..n-1], y <- [0..n-1]]
 
 -- | along with n + 1 points at infinity, one for each slope
 infinitePoints :: Int -> [Point]
-infinitePoints n = VerticalInfinity : [PointAtInfinity m | m <- upTo n]
+infinitePoints n = VerticalInfinity : [PointAtInfinity m | m <- [0..n-1]]
 
 -- | combine these to get all points
 allPoints :: Int -> [Point]
@@ -42,16 +38,16 @@ allPoints n = ordinaryPoints n ++ infinitePoints n
 -- * 1 line at infinity
 allLines :: Int -> [Line]
 allLines n = ordinaryLines n ++ verticalLines n ++ [LineAtInfinity] where
-    ordinaryLines n = [OrdinaryLine m b | m <- upTo n, b <- upTo n]
-    verticalLines n = [VerticalLine x | x <- upTo n]
+    ordinaryLines n = [OrdinaryLine m b | m <- [0..n-1], b <- [0..n-1]]
+    verticalLines n = [VerticalLine x | x <- [0..n-1]]
 
 -- | given n and a Line, return the points on the line
 -- three different cases depending on the type of line
 pointsOnLine :: Int -> Line -> [Point]
 pointsOnLine n (OrdinaryLine m b) = PointAtInfinity m : 
-    [OrdinaryPoint x ((m * x + b) `mod` n) | x <- upTo n]
+    [OrdinaryPoint x ((m * x + b) `mod` n) | x <- [0..n-1]]
 pointsOnLine n (VerticalLine x) = VerticalInfinity :
-    [OrdinaryPoint x y | y <- upTo n]
+    [OrdinaryPoint x y | y <- [0..n-1]]
 pointsOnLine n LineAtInfinity = infinitePoints n
 
 -- type aliases for our game constructs
