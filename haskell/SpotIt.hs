@@ -87,10 +87,7 @@ play :: Deck -> IO ()
 play (card1:card2:cards) = do
     putStrLn $ show card1
     putStrLn $ show card2
-    let common = picInCommon card1 card2
     guess <- getLine
-    if guess == common
-        then putStrLn "correct!"
-        else putStrLn "wrong!"
+    putStrLn $ if guess == picInCommon card1 card2 then "correct!" else "wrong!"
     play cards
 play _ = return ()
