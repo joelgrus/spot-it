@@ -22,7 +22,7 @@ data Line = OrdinaryLine Int Int    -- m, b
 
 -- | a helper function to create the list from 0 to n - 1
 upTo :: Int -> [Int]
-upTo n = [0 .. (n - 1)]
+upTo n = [0..n-1]
 
 -- | there are n^2 ordinary points (x, y)
 ordinaryPoints :: Int -> [Point]
