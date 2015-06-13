@@ -78,9 +78,9 @@ deck = createDeck 7 (map show [0..])
 -- | Given two cards, return the unique picture they have in common
 -- OK to use unsafe pattern match because intersection is always one picture
 picInCommon :: Card -> Card -> Picture
-picInCommon card1 card2 = commonCard
+picInCommon card1 card2 = commonPic
     where
-        [commonCard] = [pic1 | pic1 <- card1, pic2 <- card2, pic1 == pic2]
+        [commonPic] = [pic1 | pic1 <- card1, pic2 <- card2, pic1 == pic2]
 
 -- | Given a deck, play a game
 play :: Deck -> IO ()
